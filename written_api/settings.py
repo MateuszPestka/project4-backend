@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 if os.path.exists('env.py'):
     import env
+import dj_database_url
 
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
@@ -49,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'rest_framework',
-    'django_summernote',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'django.contrib.sites',
@@ -57,10 +57,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'django_summernote',
 
-
-    'posts',
     'profiles',
+    'posts',
 ]
 
 SITE_ID = 1
@@ -76,12 +76,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%d %b %Y',
 }
-
 if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
-        'restframework.renderers.JSONRenderer'
+        'rest_framework.renderers.JSONRenderer',
     ]
-
 
 
 REST_USE_JWT = True
@@ -127,16 +125,18 @@ WSGI_APPLICATION = 'written_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'DEV' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+    }
 
-# DATABASES = {
-#    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
-# }
 
 
 
