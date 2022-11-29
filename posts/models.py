@@ -13,7 +13,6 @@ class Post(models.Model):
     )
     content = models.TextField(blank=True)
 
-
     class Meta:
         ordering = ['-created_at']
 
